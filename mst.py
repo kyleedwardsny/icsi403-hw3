@@ -57,7 +57,7 @@ def do_mst(proc, num_nodes, edges, print_edges):
 
     cost = sum(e[2] for e in t)
 
-    print("  Execution time: %fs" % (end_time - start_time))
+    print("  Execution time: %fms" % ((end_time - start_time) * 1000))
     print("  MST cost: %i" % cost)
 
     if print_edges:
