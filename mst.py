@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import time
 
 
 def kruskal_mst(num_nodes, edges):
@@ -49,6 +50,21 @@ def prim_mst(num_nodes, edges):
 
     return t
 
+def do_mst(proc, num_nodes, edges, print_edges):
+    start_time = time.time()
+    t = proc(num_nodes, edges)
+    end_time = time.time()
+
+    cost = sum(e[2] for e in t)
+
+    print("  Execution time: %fs" % (end_time - start_time))
+    print("  MST cost: %i" % cost)
+
+    if print_edges:
+        print("  Edges:")
+        for e in sorted(t):
+            print("    %i %i (cost %i)" % e)
+
 if len(sys.argv) < 2:
     print("Usage: %s <file> [-e]" % sys.argv[0])
     exit(1)
@@ -59,24 +75,16 @@ edges = list()
 with open(sys.argv[1]) as infile:
     # The first line tells how many nodes are in the graph.
     num_nodes = int(infile.readline())
-    nodes = [list()] * num_nodes
 
     # Now read lines until the line is empty.
     line = infile.readline().strip()
     while line:
         node1, node2, cost = (int(x) for x in line.split(" "))
-        nodes[node1].append((node2, cost))
-        nodes[node2].append((node1, cost))
         edges.append((node1, node2, cost))
         line = infile.readline().strip()
 
-t = kruskal_mst(num_nodes, edges)
-print(sum(e[2] for e in t))
-if print_edges:
-    for e in t:
-        print("%i %i %i" % e)
-t = prim_mst(num_nodes, edges)
-print(sum(e[2] for e in t))
-if print_edges:
-    for e in t:
-        print("%i %i %i" % e)
+print("Kruskal's algorithm:")
+do_mst(kruskal_mst, num_nodes, edges, print_edges)
+
+print("Prim's algorithm:")
+do_mst(prim_mst, num_nodes, edges, print_edges)
